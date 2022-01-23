@@ -1,0 +1,3 @@
+/home/zzx/roughServer/examples/httpParser/build/CMakeFiles/rebuild_cache.dir
+/home/zzx/roughServer/examples/httpParser/build/CMakeFiles/httpParser.dir
+/home/zzx/roughServer/examples/httpParser/build/CMakeFiles/edit_cache.dir

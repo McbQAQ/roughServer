@@ -1,0 +1,17 @@
+[
+{
+  "directory": "/home/zzx/roughServer/build",
+  "command": "/usr/bin/c++   -I/home/zzx/roughServer/./include/roughServer   -std=c++11 -pthread   -o CMakeFiles/roughServer.dir/main.cc.o -c /home/zzx/roughServer/main.cc",
+  "file": "/home/zzx/roughServer/main.cc"
+},
+{
+  "directory": "/home/zzx/roughServer/build",
+  "command": "/usr/bin/c++   -I/home/zzx/roughServer/./include/roughServer   -std=c++11 -pthread   -o CMakeFiles/roughServer.dir/src/httpParser.cc.o -c /home/zzx/roughServer/src/httpParser.cc",
+  "file": "/home/zzx/roughServer/src/httpParser.cc"
+},
+{
+  "directory": "/home/zzx/roughServer/build",
+  "command": "/usr/bin/c++   -I/home/zzx/roughServer/./include/roughServer   -std=c++11 -pthread   -o CMakeFiles/roughServer.dir/src/threadPool.cc.o -c /home/zzx/roughServer/src/threadPool.cc",
+  "file": "/home/zzx/roughServer/src/threadPool.cc"
+}
+]

@@ -1,0 +1,3 @@
+/home/zzx/roughServer/build/CMakeFiles/rebuild_cache.dir
+/home/zzx/roughServer/build/CMakeFiles/roughServer.dir
+/home/zzx/roughServer/build/CMakeFiles/edit_cache.dir

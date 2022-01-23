@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/home/zzx/roughServer/examples/threadPool/build",
+  "command": "/usr/bin/c++   -I/home/zzx/roughServer/examples/threadPool/../../include/roughServer   -std=c++11 -pthread -g   -o CMakeFiles/threadPool.dir/main.cc.o -c /home/zzx/roughServer/examples/threadPool/main.cc",
+  "file": "/home/zzx/roughServer/examples/threadPool/main.cc"
+},
+{
+  "directory": "/home/zzx/roughServer/examples/threadPool/build",
+  "command": "/usr/bin/c++   -I/home/zzx/roughServer/examples/threadPool/../../include/roughServer   -std=c++11 -pthread -g   -o CMakeFiles/threadPool.dir/home/zzx/roughServer/src/httpParser.cc.o -c /home/zzx/roughServer/src/httpParser.cc",
+  "file": "/home/zzx/roughServer/src/httpParser.cc"
+},
+{
+  "directory": "/home/zzx/roughServer/examples/threadPool/build",
+  "command": "/usr/bin/c++   -I/home/zzx/roughServer/examples/threadPool/../../include/roughServer   -std=c++11 -pthread -g   -o CMakeFiles/threadPool.dir/home/zzx/roughServer/src/httpRequest.cc.o -c /home/zzx/roughServer/src/httpRequest.cc",
+  "file": "/home/zzx/roughServer/src/httpRequest.cc"
+},
+{
+  "directory": "/home/zzx/roughServer/examples/threadPool/build",
+  "command": "/usr/bin/c++   -I/home/zzx/roughServer/examples/threadPool/../../include/roughServer   -std=c++11 -pthread -g   -o CMakeFiles/threadPool.dir/home/zzx/roughServer/src/httpResponder.cc.o -c /home/zzx/roughServer/src/httpResponder.cc",
+  "file": "/home/zzx/roughServer/src/httpResponder.cc"
+},
+{
+  "directory": "/home/zzx/roughServer/examples/threadPool/build",
+  "command": "/usr/bin/c++   -I/home/zzx/roughServer/examples/threadPool/../../include/roughServer   -std=c++11 -pthread -g   -o CMakeFiles/threadPool.dir/home/zzx/roughServer/src/setEpoll.cc.o -c /home/zzx/roughServer/src/setEpoll.cc",
+  "file": "/home/zzx/roughServer/src/setEpoll.cc"
+},
+{
+  "directory": "/home/zzx/roughServer/examples/threadPool/build",
+  "command": "/usr/bin/c++   -I/home/zzx/roughServer/examples/threadPool/../../include/roughServer   -std=c++11 -pthread -g   -o CMakeFiles/threadPool.dir/home/zzx/roughServer/src/threadPool.cc.o -c /home/zzx/roughServer/src/threadPool.cc",
+  "file": "/home/zzx/roughServer/src/threadPool.cc"
+}
+]

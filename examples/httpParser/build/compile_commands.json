@@ -1,0 +1,17 @@
+[
+{
+  "directory": "/home/zzx/roughServer/examples/httpParser/build",
+  "command": "/usr/bin/c++   -I/home/zzx/roughServer/examples/httpParser/../../include/roughServer    -o CMakeFiles/httpParser.dir/main.cc.o -c /home/zzx/roughServer/examples/httpParser/main.cc",
+  "file": "/home/zzx/roughServer/examples/httpParser/main.cc"
+},
+{
+  "directory": "/home/zzx/roughServer/examples/httpParser/build",
+  "command": "/usr/bin/c++   -I/home/zzx/roughServer/examples/httpParser/../../include/roughServer    -o CMakeFiles/httpParser.dir/home/zzx/roughServer/src/httpParser.cc.o -c /home/zzx/roughServer/src/httpParser.cc",
+  "file": "/home/zzx/roughServer/src/httpParser.cc"
+},
+{
+  "directory": "/home/zzx/roughServer/examples/httpParser/build",
+  "command": "/usr/bin/c++   -I/home/zzx/roughServer/examples/httpParser/../../include/roughServer    -o CMakeFiles/httpParser.dir/home/zzx/roughServer/src/httpResponder.cc.o -c /home/zzx/roughServer/src/httpResponder.cc",
+  "file": "/home/zzx/roughServer/src/httpResponder.cc"
+}
+]

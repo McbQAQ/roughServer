@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++11 -pthread  -rdynamic CMakeFiles/roughServer.dir/main.cc.o CMakeFiles/roughServer.dir/src/httpParser.cc.o CMakeFiles/roughServer.dir/src/threadPool.cc.o  -o roughServer 

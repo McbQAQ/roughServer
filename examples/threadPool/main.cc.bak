@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include "threadPool.h"
+#include <sys/epoll.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <fcntl.h>
+
+int main() {
+    const char *ip = "192.168.220.137";
+    int port = 80;
+    int lisSock = socket(PF_INET, SOCK_STREAM, 0);
+
+    sockaddr_in lisAddr;
+    bzero(&lisAddr, sizeof(lisAddr));
+    lisAddr.sin_family = AF_INET;
+    lisAddr.sin_port = htons(port);
+    inet_pton(AF_INET, ip, &lisAddr.sin_addr);
+
+    if (bind(lisSock, (sockaddr*) &lisAddr, sizeof(lisAddr)) != 0) {
+        printf("error occur in binding socket, errno: %d\n", errno);
+        return 0;
+    }
+    if (listen(lisSock, 8) != 0) {
+        printf("error occur in listening socket\n");
+        return 0;
+    }
+    
+    char *buf = new char[10240];
+    memset(buf, '\0', 1024);
+    int accSock;
+    sockaddr_in accAddr;
+    socklen_t accAddrLen = sizeof(accAddr);
+    while ((accSock = accept(lisSock, (sockaddr*) &accAddr, &accAddrLen))) {
+        int flag = fcntl(accSock, F_GETFL, 0);
+        fcntl(accSock, F_SETFL, flag|O_NONBLOCK);
+        printf("connection from ip %d\n", ntohs(accAddr.sin_port));
+        int len = 0, totalLen = 0;
+        sleep(1);
+        while((len = recv(accSock, buf+totalLen, 1024, 0)) > 0) {
+            printf("len: %d\n", len);
+            totalLen += len;
+        }
+        printf("content: %s", buf);
+        buf = buf + totalLen;
+        close(accSock);
+    }
+    close(lisSock);
+    return 0;
+    
+}

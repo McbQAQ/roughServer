@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../../../include/roughServer/httpParser.h
+string.h
+-
+stdio.h
+-
+stdlib.h
+-
+
+/home/zzx/roughServer/examples/httpParser/main.cc
+string.h
+-
+stdio.h
+-
+httpParser.h
+/home/zzx/roughServer/examples/httpParser/httpParser.h
+fcntl.h
+-
+unistd.h
+-
+
+/home/zzx/roughServer/src/httpParser.cc
+httpParser.h
+/home/zzx/roughServer/src/httpParser.h
+
