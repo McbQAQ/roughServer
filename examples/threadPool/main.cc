@@ -19,8 +19,9 @@
 
 int main() {
     HttpRequest *request[MAX_FD] {nullptr};
+    std::list<HttpRequest*> requestWait;
 
-    const char *ip = "192.168.220.137";
+    const char *ip = "0.0.0.0";
     int port = 80;
     int lisSock = socket(PF_INET, SOCK_STREAM, 0);
 
@@ -46,7 +47,16 @@ int main() {
     
     addFd(epollFd, lisSock, EPOLLIN|EPOLLET|EPOLLRDHUP);
     while(1) {
-        int num = epoll_wait(epollFd, events, MAX_EVENT_NUM, -1);
+        while(!requestWait.empty()) {
+#ifdef DEBUG
+            printf("try to add from wait request queue\n");
+#endif
+            if (!pool.add(requestWait.front())) {
+                break;
+            }
+            requestWait.pop_front();
+        }
+        int num = epoll_wait(epollFd, events, MAX_EVENT_NUM, 5);
         if (num < 0 && errno != EINTR) {
             printf("epoll error\n");
             break;
@@ -73,7 +83,9 @@ int main() {
                         printf("internal busy\n");
                         continue;
                     }
-                    //printf("new connection fd: %d\n", connFd);
+#ifdef DEBUG
+                    printf("socket %d connect\n", connFd);
+#endif
                     if (!request[connFd]) {
                     request[connFd] = new HttpRequest(connFd, epollFd);
                     }
@@ -81,14 +93,32 @@ int main() {
                 }   
             }
             else if (events[i].events & (EPOLLRDHUP|EPOLLHUP|EPOLLERR)) {
-                //printf("client close connection\n");
+#ifdef DEBUG
+                printf("socket %d events HUP\n", sockFd);
+#endif
                 request[sockFd]->closeConnection();
             }
             else if (events[i].events & EPOLLIN) {
-                pool.add(request[sockFd]);
+#ifdef DEBUG
+                printf("socket %d events IN\n", sockFd);
+#endif
+                if(!pool.add(request[sockFd])) {
+#ifdef DEBUG
+                    printf("socket %d is added to waiting request queue\n", sockFd);
+#endif
+                    requestWait.push_back(request[sockFd]);
+                }
             }
             else if (events[i].events & EPOLLOUT) {
-                pool.add(request[sockFd]);
+#ifdef DEBUG
+                printf("socket %d events OUT\n", sockFd);
+#endif
+                if (!pool.add(request[sockFd])) {
+#ifdef DEBUG
+                    printf("socket %d is added to waiting request queue\n", sockFd);
+#endif
+                    requestWait.push_back(request[sockFd]);
+                }
             }
             else {
 

@@ -62,6 +62,9 @@ void *ThreadPool::worker(void *t) {
 int ThreadPool::add(HttpRequest *r) {
     mlock.lock();
     if (requestQueue.size() > maxRequest) { 
+#ifdef DEBUG
+        printf("socket %d fail to add to request queue\n", r->sockFd);
+#endif
         mlock.unlock();
         return 0;
     }

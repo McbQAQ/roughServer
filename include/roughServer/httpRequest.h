@@ -10,6 +10,7 @@
 #define HTTP_REQUEST_BUFFER_SIZE 1024
 
 class HttpRequest {
+    friend class ThreadPool;
 public:
     enum HttpRequestStatus {HTTP_REQUEST_CLOSE = 0, HTTP_REQUEST_READ, HTTP_REQUEST_PROCESS, HTTP_REQUEST_WRITE};
     enum ReadStatus {READ_OK = 0, READ_AGAIN, READ_OVER_FLOW, READ_ERROR};

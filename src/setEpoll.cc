@@ -1,4 +1,5 @@
 #include <setEpoll.h>
+#include <stdio.h>
 
 int setNonBlocking(int fd) {
     int preOp = fcntl(fd, F_GETFL);
@@ -8,6 +9,9 @@ int setNonBlocking(int fd) {
 }
 
 void addFd(int epollFd, int fd, int events) {
+#ifdef DEBUG
+    printf("socket %d is added to epoll\n", fd);
+#endif
     epoll_event ev;
     ev.data.fd = fd;
     ev.events = events;

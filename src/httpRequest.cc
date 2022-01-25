@@ -86,7 +86,7 @@ HttpRequest::WriteStatus HttpRequest::write() {
             return WRITE_ERROR;
         }
         writeBufIdx += ret;
-        if (writeBufIdx >= (sendData[0].iov_len + sendData[1].iov_len)) {
+        if (writeBufIdx >= (hr->paddingCheckIdx + hr->fileLen)) {
             return WRITE_OK;
         }
     }
@@ -97,6 +97,9 @@ HttpRequest::WriteStatus HttpRequest::write() {
     Call init() before next connection.
  */
 void HttpRequest::closeConnection() {
+#ifdef DEBUG
+    printf("socket %d close\n", sockFd);
+#endif
     removeFd(epollFd, sockFd);
     memset(clientIP, '\0', strlen(clientIP));
     clientPort = 0;
@@ -110,7 +113,10 @@ void HttpRequest::closeConnection() {
     hp = nullptr;
     hr = nullptr;
     requestStatus = HTTP_REQUEST_CLOSE;
-    close(sockFd);
+    int closeRet = close(sockFd);
+    if (closeRet != 0) {
+        printf("socket %d close error, errno: %d\n", sockFd, errno);
+    }
 }
 
 /*
@@ -193,6 +199,9 @@ void HttpRequest::init() {
 }
 
 void HttpRequest::process() {
+#ifdef DEBUG
+    printf("socket %d begin process\n", sockFd);
+#endif
     if (requestStatus == HTTP_REQUEST_CLOSE) {
         init();
         requestStatus = HTTP_REQUEST_READ;
@@ -200,28 +209,38 @@ void HttpRequest::process() {
 
     if (requestStatus == HTTP_REQUEST_READ) {
         ReadStatus readRet = read();
-
         if (readRet == READ_OK) {
+            /* TODO: May miss events on fd when parse? */
             HttpParser::LineParserStatus parseRet = hp->parse();
             if (parseRet == HttpParser::LINE_OK) {
+#ifdef DEBUG
+                printf("socket %d finish read, turn to padding\n", sockFd);
+#endif
                 requestStatus = HTTP_REQUEST_PROCESS;
             }
             else if (parseRet == HttpParser::LINE_INCOMPLETE) {
+#ifdef DEBUG
+                printf("socket %d recv incomplete data, read again\n", sockFd);
+#endif
                 resetOneShot(epollFd, sockFd, EPOLLIN|EPOLLET|EPOLLONESHOT|EPOLLRDHUP);
+                /* Return immediately after resetOneShot to avoid adding the same fd twice */
                 return;
             }
             else {
-                printf("the data receive has broken, close connection\n");
+                printf("socket %d recv broken data, close connection\n", sockFd);
                 closeConnection();
                 return;
             }
         }
         else if (readRet == READ_AGAIN) {
+#ifdef DEBUG
+            printf("socket %d need to read again\n", sockFd);
+#endif
             resetOneShot(epollFd, sockFd, EPOLLIN|EPOLLET|EPOLLONESHOT|EPOLLRDHUP);
             return;
         }
         else {
-            printf("error occur in reading from socket, close connection\n");
+            printf("socket %d fail to read data, close connection\n", sockFd);
             closeConnection();
             return;
         }
@@ -230,10 +249,13 @@ void HttpRequest::process() {
     if (requestStatus == HTTP_REQUEST_PROCESS) {
         HttpResponder::ReturnCode responderRet = hr->padding();
         if (responderRet == HttpResponder::RESPONDER_OK) {
+#ifdef DEBUG
+            printf("socket %d finish padding, turn to write\n", sockFd);
+#endif
             requestStatus = HTTP_REQUEST_WRITE;
         }
         else {
-            printf("error %d occur in padding, close connection\n", responderRet);
+            printf("socket %d fail to padding data, errno: %d\n", sockFd, responderRet);
             closeConnection();
             return;
         }
@@ -241,23 +263,33 @@ void HttpRequest::process() {
 
     if (requestStatus == HTTP_REQUEST_WRITE) {
         WriteStatus writeRet = write();
+        /* There is few operation between write() with resetOneShot(), for which missing events is impossible? */
         if (writeRet == WRITE_OK) {
             if (hp->connection == HttpParser::CONNECTION_KEEP_ALIVE) {
+#ifdef DEBUG
+                printf("socket %d is keep-alive, reset socket for next data\n", sockFd);
+#endif
                 requestStatus = HTTP_REQUEST_CLOSE;
                 resetOneShot(epollFd, sockFd, EPOLLIN|EPOLLET|EPOLLONESHOT|EPOLLRDHUP);
                 return;
             }
             else {
+#ifdef DEBUG
+                printf("socket %d is other connection type, close connection\n", sockFd);
+#endif
                 closeConnection();
                 return;
             }
         }
         else if (writeRet == WRITE_AGAIN) {
+#ifdef DEBUG
+            printf("socket %d need to write again\n", sockFd);
+#endif
             resetOneShot(epollFd, sockFd, EPOLLOUT|EPOLLET|EPOLLONESHOT|EPOLLRDHUP);
             return;
         }
         else {
-            printf("error %d occur in writing, close connection\n", writeRet);
+            printf("socket %d fail to write, errno: %d\n", sockFd, writeRet);
             closeConnection();
             return;
         }
